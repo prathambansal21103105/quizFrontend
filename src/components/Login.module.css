@@ -1,11 +1,11 @@
-.form {
+/* .form {
     padding: 1rem;
     max-width: 25rem;
     margin: 2rem auto;
     border-radius: 4px;
     background: linear-gradient(180deg, #050505, #0b0c0b);
     color:black;
-    border: goldenrod;
+    border: green;
     border-style: dotted;
   }
   
@@ -61,7 +61,7 @@
   }
   
   button:hover {
-    background: goldenrod !important;
+    background: green !important;
     border: black;
     border-width: 1rem;
     color:black;
@@ -76,4 +76,4 @@
     color:black;
     font-size: small;
     font-weight: bold;
-  }
+  } */

@@ -33,7 +33,7 @@
   
   .input:hover {
     outline: none;
-    border-color: gold;
+    border-color: green;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
 
@@ -59,7 +59,7 @@
   
   .button {
     padding: 10px;
-    background-color: goldenrod;
+    background-color: green;
     color: white;
     border: none;
     border-radius: 5px;

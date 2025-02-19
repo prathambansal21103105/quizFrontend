@@ -7,6 +7,11 @@ const Home=()=>{
   const [quizes,setQuizes] = useState([]);
   const navigate = useNavigate();
   useEffect(()=>{
+    Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("quiz_")) {
+            localStorage.removeItem(key);
+        }
+    });
     fetchQuizes();
   },[]);
   const fetchQuizes=async() => {
@@ -30,9 +35,10 @@ const Home=()=>{
         body:JSON.stringify(data)
     })
     const resBody=await res.json();
+    console.log(resBody);
     setQuizes((prevQuizes) => [...prevQuizes, resBody]);
     navigate("/quiz", { state: { quiz: resBody } });
-    console.log(resBody);
+    
   }
     return (
       <>

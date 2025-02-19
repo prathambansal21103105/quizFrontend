@@ -1,16 +1,16 @@
-.form {
+/* .form {
     padding: 1rem;
     max-width: 25rem;
     margin: 2rem auto;
-    border-radius: 4px;
+    border-radius: 4px; */
     /* background: linear-gradient(180deg, #f2f4f4, rgb(21, 17, 9)); */
-    background:black;
+    /* background:black; */
     /* color:black; */
-    border: goldenrod;
-    border-style: dotted;
-  }
+    /* border: green; */
+    /* border-style: dotted; */
+  /* } */
   
-  .input-group {
+  /* .input-group {
     display: flex;
     justify-content: space-evenly;
     gap: 1.25rem;
@@ -41,35 +41,35 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
-  }
+  } */
   
-  .button {
+  /* .button {
     padding: 0.5rem 1rem;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 0.25rem; */
     /* background: linear-gradient(180deg, #1f1f1f, #030303); */
-    background: rgb(83, 71, 8);
+    /* background: rgb(83, 71, 8);
     color: white;
     font-family: 'Roboto Condensed', sans-serif;
     cursor: pointer;
-  }
+  } */
   
-  .buttonAlt {
+  /* .buttonAlt {
     font-family: 'Roboto Condensed', sans-serif;
     border: none;
     background: transparent;
     color: #c2e9e0;
     cursor: pointer;
-  }
+  } */
   
-  button:hover {
-    background: linear-gradient(180deg, #4a4b4b00, #585858);
-    border: black;
-    border-width: 1rem;
-    color:rgb(255, 253, 253);
-  }
+  /* button:hover { */
+    /* background: linear-gradient(180deg, #4a4b4b00, #585858); */
+    /* border: black; */
+    /* border-width: 1rem; */
+    /* color:rgb(255, 253, 253); */
+  /* } */
   
-  .buttonAlt:hover {
+  /* .buttonAlt:hover {
     background: transparent;
     color: #000000;
   }
@@ -78,7 +78,7 @@
     color:white!important;
     font-size: small;
     font-weight: bold;
-  }
-  h1{
-    color:rgb(240, 236, 240) !important;
-  }
+  } */
+  /* h1{ */
+    /* color:rgb(240, 236, 240) !important; */
+  /* } */

@@ -4,7 +4,7 @@
   padding: 2rem;
   display: flex;
   justify-content: center;
-  background-color: black;
+  background-color: white;
 
 }
 
@@ -15,17 +15,17 @@
 
 .list a {
   text-decoration: none;
-  color: var(--color-primary-400);
+  color: black;
 }
 
 .list a:hover,
 .list a.active {
-  color: var(--color-primary-800);
+  color: green;
   text-decoration: underline;
 }
 
 .username{
-  color:white;
+  color:black;
   font-weight: bold !important;
 }
 
