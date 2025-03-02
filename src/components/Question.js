@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react";
 import AddQuestion from "./AddQuestion";
 
-const Question = ({ questionData, updateQuestion, deleteQuestion }) => {
+const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQuestion }) => {
     const { questionNum, question, marks, options, image } = questionData;
     const [showAnswer, setShowAnswer] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -26,6 +26,26 @@ const Question = ({ questionData, updateQuestion, deleteQuestion }) => {
       console.log(res);
       deleteQuestion(questionData.id);
     }
+    const handleDuplicate = async() => {
+        const updatedQuestion = {
+         ...questionData,
+         questionNum:questionData.questionNum+1,
+        }
+        console.log(updatedQuestion);
+        const res = await fetch("http://localhost:8080/questions/duplicate/" + quizId, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedQuestion),
+        });
+        if (!res.ok) {
+            throw new Error("Failed to add question");
+        }
+        const questionId = await res.text();
+        updatedQuestion.id=questionId;
+        addQuestion(updatedQuestion);
+    }
     return (
         <div
             style={styles.card}
@@ -39,6 +59,7 @@ const Question = ({ questionData, updateQuestion, deleteQuestion }) => {
                         Q{questionNum}: {question}
                         </div>
                         <div style={isHovered ? styles.buttonsVisible : styles.buttonsHidden}>
+                            <button className="duplicate1" onClick={handleDuplicate}>➕ Copy</button>
                             <button className="edit1" onClick={() => setEdit(true)}>✏️ Edit</button>
                             <button className="delete1" onClick={deleteHandler}>🗑️ Delete</button>
                         </div>

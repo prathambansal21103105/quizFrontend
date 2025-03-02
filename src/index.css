@@ -473,8 +473,10 @@ main{
   border-radius: 0.25rem;
   background: rgb(83, 71, 8);
   color: #f0f9f7;
+  display:block;
   font-family: 'Roboto Condensed', sans-serif;
   cursor: pointer;
+  margin:auto;
 }
 
 .button2:hover{
@@ -594,16 +596,25 @@ main{
   padding:0px;
 }
 
+.spanDiv {
+  display:flex;
+  flex-direction: row;
+  width:40%;
+  margin-left:42.5%;
+}
+
 .buttonEdit {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   border: none;
   border-radius: 0.25rem;
   background: rgb(83, 71, 8);
   color: #f0f9f7;
   font-family: 'Roboto Condensed', sans-serif;
   cursor: pointer;
-  width:70px;
-  margin:auto;
+  width:max-content;
+  min-width: 70px;
+  margin-right: 0;
+  margin-left:20px;
   margin-top: 10px;
 }
 
@@ -638,4 +649,111 @@ main{
   overflow: scroll;
   font-weight: bold;
   text-align:left;
+}
+
+.button4 {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: green;
+  color: #f0f9f7;
+  font-family: 'Roboto Condensed', sans-serif;
+  cursor: pointer;
+  margin-top:20px;
+}
+
+.button4:hover{
+  background: rgb(2, 81, 2);
+}
+
+.gif{
+  height:50%;
+  width:50%;
+  margin:auto;
+  margin-top:30px;
+  border:dashed;
+  
+}
+
+.quizDetails1 {
+  background: rgb(244 245 245); /* Light gray background */
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 18px 10px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bulk-update-container {
+  width: 400px;
+  margin: auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-top:20px;
+}
+
+.bulk-update-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.bulk-update-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.bulk-update-item {
+  margin-bottom: 10px;
+}
+
+.bulk-update-input {
+  width: 80%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.bulk-update-button {
+  padding: 10px 15px;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.update-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.bulk-update-button:hover {
+  opacity: 0.8;
+}
+
+.duplicate1{
+  background-color: rgb(92, 162, 170);
+  padding: 6px 12px;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.duplicate1:hover{
+  background-color: white;
+  color:black;
 }

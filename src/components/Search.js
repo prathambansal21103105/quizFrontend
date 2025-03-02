@@ -1,5 +1,6 @@
 import { useState } from "react";
 import QuizCard from "./QuizCard";
+import imageSrc from '../search.gif';
 
 const Search=()=>{
   const [searchInput,setSearchInput] = useState("");
@@ -19,6 +20,7 @@ const Search=()=>{
     return (
       <>
       <main>
+        <div className="quizDetails1">
         <p className="heading"> Search for a quiz</p>
         <div className="searchBar">
             <input
@@ -34,7 +36,8 @@ const Search=()=>{
             onClick={submitHandler}
             >Search</button>
         </div>
-
+        </div>
+        <img src={imageSrc} className="gif" alt="how to use"/>
         <ul className="quizList">
           {list.map((quiz)=><li key={quiz.id}><QuizCard quiz={quiz}/></li>)}
         </ul>

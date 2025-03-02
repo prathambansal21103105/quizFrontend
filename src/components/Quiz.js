@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Question from "./Question";
 import AddQuestion from './AddQuestion';
+import AnswerInput from './AnswerInput';
 
 const Quiz = () => {
     const location = useLocation();
@@ -13,6 +14,7 @@ const Quiz = () => {
     const [course, setCourse] = useState(() => localStorage.getItem(`quiz_${quizId}_course`) || quiz.course);
     const [maxMarks, setMaxMarks] = useState(() => localStorage.getItem(`quiz_${quizId}_maxMarks`) || quiz.maxMarks);
     const [editAble, setEditAble] = useState(false);
+    const [visible, setVisible] = useState(false);
     // console.log(quiz);
     // Load questions from localStorage or quiz data
     const [questions, setQuestions] = useState(() => {
@@ -128,6 +130,28 @@ const Quiz = () => {
         );
     };
 
+    const generateResults = async() => {
+        try{
+            const res1 = await fetch(`http://localhost:8080/quiz/evaluate/${quizId}`);
+            console.log(res1);
+            const res = await fetch(`http://localhost:8080/quiz/generate-csv/${quizId}`);
+            if (!res.ok) {
+                throw new Error("Failed to download file");
+            }
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `quiz_responses_${quizId}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+        catch(error){
+            console.error("Error downloading file:", error);
+        }
+    };
     const sampleQuestion = {
         "questionNum": "1",
         "question": "",
@@ -203,14 +227,17 @@ const Quiz = () => {
                     />: ` ${maxMarks}`}
                     </span>
                 </div>
+                <div className="spanDiv">
                 <button className="buttonEdit" onClick={submitHandler}>{!editAble? `Edit`:`Save`}</button>
+                <button className="buttonEdit" onClick={()=>setVisible((state) => !state)}>Update Answers</button>
+                </div>
             </div>
             <div>
-            
-            <ul>
+            {visible && <AnswerInput questions={questions} setQuestions={setQuestions} setVisible={setVisible} quizId={quizId}/>}
+            {!visible && <ul>
                 {questions.map((question) => (
                     <li className="questionList" key={question.id}>
-                        <Question questionData={question} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion} />
+                        <Question questionData={question} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion} addQuestion={addQuestion} quizId={quizId}/>
                     </li>
                 ))}
                 {create &&
@@ -220,10 +247,14 @@ const Quiz = () => {
                         </div>
                     </li>
                 }
-            </ul>
+            </ul>}
+            {!visible &&
+            <div>
             <button className="button1" onClick={createQuestionTrigger}>Add Question</button>
-
             <button className="button2" onClick={generatePDF}>Generate PDF</button>
+            <button className="button4" onClick={generateResults}>Generate Results</button>
+            </div>
+            }
             </div>
             </div>
         </main>
