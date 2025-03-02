@@ -5,9 +5,14 @@ import AddQuestion from './AddQuestion';
 
 const Quiz = () => {
     const location = useLocation();
-    const quiz = location.state?.quiz;
+    let quiz = location.state?.quiz;
     const quizId = quiz?.id; // Unique identifier for the quiz
     const [create,setCreate] = useState(false);
+    const [quizTitle, setQuizTitle] = useState(() => localStorage.getItem(`quiz_${quizId}_title`) || quiz.title);
+    const [courseCode, setCourseCode] = useState(() => localStorage.getItem(`quiz_${quizId}_courseCode`) || quiz.courseCode);
+    const [course, setCourse] = useState(() => localStorage.getItem(`quiz_${quizId}_course`) || quiz.course);
+    const [maxMarks, setMaxMarks] = useState(() => localStorage.getItem(`quiz_${quizId}_maxMarks`) || quiz.maxMarks);
+    const [editAble, setEditAble] = useState(false);
     // console.log(quiz);
     // Load questions from localStorage or quiz data
     const [questions, setQuestions] = useState(() => {
@@ -43,12 +48,59 @@ const Quiz = () => {
         setCreate(true);
     }
 
+    const submitHandler=async()=>{
+        if(editAble){
+            try{
+                let updatedQuiz = {
+                    title:quizTitle,
+                    course,
+                    courseCode,
+                    maxMarks
+                }
+                const res=await fetch("http://localhost:8080/quiz/update/" + quiz.id,{
+                    method:"POST",
+                      headers:{
+                        "Content-Type":"application/json",
+                      },
+                      body:JSON.stringify(updatedQuiz)
+                  })
+                //   const resBody=await res.json();
+                  console.log(res);
+                  quiz.title = quizTitle;
+                  quiz.course = course;
+                  quiz.courseCode = courseCode;
+                  quiz.maxMarks = maxMarks;
+            }
+            catch(e){
+                console.log(e);
+            }
+        }
+        setEditAble((state) => !state);
+    }
+
     // Save questions to localStorage whenever they change
     useEffect(() => {
         if (questions.length > 0) {
             localStorage.setItem(`quiz_${quizId}_questions`, JSON.stringify(questions));
         }
     }, [questions, quizId]);
+
+    useEffect(() => {
+        localStorage.setItem(`quiz_${quizId}_title`, quizTitle);
+    }, [quizTitle, quizId]);
+
+    useEffect(() => {
+        localStorage.setItem(`quiz_${quizId}_courseCode`, courseCode);
+    }, [courseCode, quizId]);
+
+    useEffect(() => {
+        localStorage.setItem(`quiz_${quizId}_course`, course);
+    }, [course, quizId]);
+
+    useEffect(() => {
+        localStorage.setItem(`quiz_${quizId}_maxMarks`, maxMarks);
+    }, [maxMarks, quizId]);
+
 
     // Function to update a question inside the list
     const updateQuestion = (updatedQuestion) => {
@@ -92,11 +144,66 @@ const Quiz = () => {
         <main>
             <div className="quizContainer">
             <p className="heading">Quiz</p>
-            <h1 className="quizTitle">{quiz?.title}</h1>
+            <h1 className="quizTitle">
+                {editAble? <input
+                    type="name"
+                    placeholder="Quiz Title"
+                    className="invisibleh1"
+                    value={quizTitle}
+                    onChange={(e)=>{setQuizTitle(e.target.value)}}
+                /> : <div className="invisibleh1">{quizTitle}</div> }
+            </h1>
             <div className="quizDetails">
-                <p><strong>Course:</strong> {quiz.course}</p>
-                <p><strong>Course Code:</strong> {quiz.courseCode}</p>
-                <p><strong>Max Marks:</strong> {quiz.maxMarks}</p>
+            
+                <div className="head">
+                    <div className="firstHalf">
+                    <div className="innerDiv">
+                    <strong>Course:</strong> 
+                    </div>
+                    </div>
+                    <span className="secondHalf">
+                    {editAble? <input
+                        type="name"
+                        placeholder="Course Name"
+                        className="invisible"
+                        value={course}
+                        onChange={(e)=>{setCourse(e.target.value)}}
+                    />: `  ${course}`}
+                    </span>
+                </div>
+                <div className="head">
+                    <div className="firstHalf">
+                    <div className="innerDiv">
+                    <strong>Course Code:</strong> 
+                    </div>
+                    </div>
+                    <span className="secondHalf">
+                    {editAble? <input
+                        type="name"
+                        placeholder="Course Code"
+                        className="invisible"
+                        value={courseCode}
+                        onChange={(e)=>{setCourseCode(e.target.value)}}
+                    />: ` ${courseCode}`}
+                    </span>
+                </div>
+                <div className="head">
+                    <div className="firstHalf">
+                    <div className="innerDiv">
+                    <strong>Max Marks:</strong> 
+                    </div>
+                    </div>
+                    <span className="secondHalf">
+                    {editAble? <input
+                        type="name"
+                        placeholder="Max Marks"
+                        className="invisible"
+                        value={maxMarks}
+                        onChange={(e)=>{setMaxMarks(Number(e.target.value))}}
+                    />: ` ${maxMarks}`}
+                    </span>
+                </div>
+                <button className="buttonEdit" onClick={submitHandler}>{!editAble? `Edit`:`Save`}</button>
             </div>
             <div>
             

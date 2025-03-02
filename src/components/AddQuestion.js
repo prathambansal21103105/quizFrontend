@@ -1,5 +1,28 @@
 import { useState } from "react";
 
+const replaceGreekCommands = (input) => {
+    console.log(input);
+    const symbolMap = {
+        // Greek Letters
+        "//alpha": "α", "//beta": "β", "//gamma": "γ", "//delta": "δ",
+        "//epsilon": "ε", "//zeta": "ζ", "//eta": "η", "//theta": "θ",
+        "//iota": "ι", "//kappa": "κ", "//lambda": "λ", "//mu": "μ",
+        "//nu": "ν", "//xi": "ξ", "//omicron": "ο", "//pi": "π",
+        "//rho": "ρ", "//sigma": "σ", "//tau": "τ", "//upsilon": "υ",
+        "//phi": "φ", "//chi": "χ", "//psi": "ψ", "//omega": "ω",
+
+        // Mathematical Symbols
+        "//sum": "∑",         // Summation
+        "//prod": "∏",        // Product
+        "//int": "∫",         // Integral
+        "//contourint": "∮",  // Contour Integral
+        "//deriv": "d/dx",    // Derivative
+        "//partialderiv": "∂/∂x"  // Partial Derivative
+    };
+
+    return input.replace(/\/\/[a-z]+/g, match => symbolMap[match] || match);
+}
+
 const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQuestion, addQuestion }) => {
     const [questionNum, setQuestionNum] = useState(questionData.questionNum);
     const [question, setQuestion] = useState(questionData.question);
@@ -28,17 +51,25 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
 
     const saveHandler = async () => {
         // console.log(questionData);
+        let initialQuestion = question;
+        let initialOptions = options;
+        console.log(initialOptions);
+        let newQuestion = replaceGreekCommands(initialQuestion);
+        let newOptions = initialOptions.map(option => replaceGreekCommands(option));
+        // let newOptions = replaceGreekCommands(initialOptions);
+        console.log(newQuestion);
+        // console.log(newOptions);
         let updatedQuestion = {
             ...questionData,
             questionNum,
-            question,
+            question: newQuestion,
             marks,
-            options,
-            image: null,
+            options: newOptions,
             // image,  // Sending the base64-encoded image
             answer: correctAnswer,
         };
         console.log(updatedQuestion);
+        
         if(createQuestion){
             const res = await fetch("http://localhost:8080/questions/" + createQuestion, {
                 method: "POST",
@@ -187,6 +218,7 @@ const styles = {
         border: "1px solid #ccc",
         borderRadius: "5px",
         fontSize: "16px",
+        backgroundColor: "rgb(84 107 105)",
     },
     inputFile: {
         marginTop: "5px",
@@ -205,7 +237,7 @@ const styles = {
     },
     saveButton: {
         padding: "10px 15px",
-        backgroundColor: "#28a745",
+        backgroundColor: "rgb(74 125 63)",
         color: "white",
         border: "none",
         borderRadius: "5px",

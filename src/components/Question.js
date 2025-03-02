@@ -35,7 +35,9 @@ const Question = ({ questionData, updateQuestion, deleteQuestion }) => {
             {!edit ? (
                 <div>
                     <div style={styles.header}>
-                        <h3>Q{questionNum}: {question}</h3>
+                        <div className="questionDes">
+                        Q{questionNum}: {question}
+                        </div>
                         <div style={isHovered ? styles.buttonsVisible : styles.buttonsHidden}>
                             <button className="edit1" onClick={() => setEdit(true)}>✏️ Edit</button>
                             <button className="delete1" onClick={deleteHandler}>🗑️ Delete</button>
@@ -114,6 +116,9 @@ const styles = {
         backgroundColor: "#f9f9f9",
         marginBottom: "5px",
         borderRadius: "4px",
+        overflow: "scroll",
+        display: "flex",
+        textAlign: "left",
     },
     buttonsVisible: {
         display: "flex",

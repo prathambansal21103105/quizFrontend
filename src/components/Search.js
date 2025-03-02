@@ -1,34 +1,43 @@
-// import Card from "./Card";
-// import { useContext } from "react";
-// import AppContext from "../store/app-context";
-import Navigation from "./Navigation";
-import Tags from "./Tags";
+import { useState } from "react";
+import QuizCard from "./QuizCard";
 
-const Search=({items,user,reset,clickHandler})=>{
-  // const ctx=useContext(AppContext);
-  // const topics=[];
-  // console.log(items);
-  // if(items){
-  //   let taggedQuestions={};
-  //   for(const question of items){
-  //     const currTag=question.tag;
-  //     taggedQuestions[currTag]={};
-  //   }
-  //   for(const question of items){
-  //     const currTag=question.tag;
-  //     var size = Object.keys(taggedQuestions[currTag]).length;
-  //     taggedQuestions[currTag][size]=question;
-  //   }
-  //   console.log(taggedQuestions);
-  //   for(const topic in taggedQuestions){
-  //     topics.push(taggedQuestions[topic]);
-  //   }
-  // }
-  // const name=(user["username"])? user["username"]:"";
+const Search=()=>{
+  const [searchInput,setSearchInput] = useState("");
+  const [list,setList] = useState([]);
+  const submitHandler=async()=>{
+    setSearchInput(searchInput.trim());
+    const fetchQuizesBySearchTerm=async() => {
+      const res=await fetch("http://localhost:8080/quiz/search/" + searchInput)
+      const resBody=await res.json();
+      console.log(resBody);
+      setList(resBody);
+    }
+    if(searchInput !== ""){
+      fetchQuizesBySearchTerm();
+    }
+  }
     return (
       <>
       <main>
         <p className="heading"> Search for a quiz</p>
+        <div className="searchBar">
+            <input
+            type="name"
+            placeholder="Quiz Title or Course Code"
+            className="bar"
+            value={searchInput}
+            onChange={(e)=>{setSearchInput(e.target.value)}}
+            />
+            <button
+            type="submit"
+            className="searchButton"
+            onClick={submitHandler}
+            >Search</button>
+        </div>
+
+        <ul className="quizList">
+          {list.map((quiz)=><li key={quiz.id}><QuizCard quiz={quiz}/></li>)}
+        </ul>
       </main>
       </>
     );
