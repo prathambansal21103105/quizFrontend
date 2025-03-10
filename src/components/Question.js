@@ -1,19 +1,31 @@
 import { useState,useEffect } from "react";
 import AddQuestion from "./AddQuestion";
 
-const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQuestion }) => {
-    const { questionNum, question, marks, options, image } = questionData;
+const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQuestion, count }) => {
+    const { questionNum, question, marks, options, imageId} = questionData;
     const [showAnswer, setShowAnswer] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [edit, setEdit] = useState(false);
-    // console.log(questionData);
-    // Function to get image source
-    const getImageSrc = () => {
-        if (image) {
-            return image;  // Image should be base64 string or Blob
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+        const fetchImage = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/question-images/${questionData.imageId}`);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const reader = new FileReader();
+                    reader.onloadend = () => setImage(reader.result);
+                    reader.readAsDataURL(blob);
+                }
+            } catch (error) {
+                console.error("Error fetching image:", error);
+            }
+        };
+        if(imageId){
+            fetchImage();
         }
-        return null;
-    };
+    }, [questionData.id,count]);
 
     const deleteHandler=async()=>{
       const res = await fetch("http://localhost:8080/questions/" + questionData.id, {
@@ -65,9 +77,9 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
                         </div>
                     </div>
 
-                    {getImageSrc() && (
+                    {image && (
                         <img
-                            src={getImageSrc()}
+                            src={image}
                             alt="Question"
                             style={styles.imagePreview}
                         />

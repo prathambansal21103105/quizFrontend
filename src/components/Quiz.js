@@ -6,6 +6,7 @@ import AnswerInput from './AnswerInput';
 
 const Quiz = () => {
     const location = useLocation();
+    const [count,setCount] = useState(0);
     let quiz = location.state?.quiz;
     const quizId = quiz?.id; // Unique identifier for the quiz
     const [create,setCreate] = useState(false);
@@ -114,27 +115,28 @@ const Quiz = () => {
         if (questions.length > 0) {
             localStorage.setItem(`quiz_${quizId}_questions`, JSON.stringify(questions));
         }
-    }, [questions, quizId]);
+    }, [questions, quizId, count]);
 
     useEffect(() => {
         localStorage.setItem(`quiz_${quizId}_title`, quizTitle);
-    }, [quizTitle, quizId]);
+    }, [quizTitle, quizId, count]);
 
     useEffect(() => {
         localStorage.setItem(`quiz_${quizId}_courseCode`, courseCode);
-    }, [courseCode, quizId]);
+    }, [courseCode, quizId, count]);
 
     useEffect(() => {
         localStorage.setItem(`quiz_${quizId}_course`, course);
-    }, [course, quizId]);
+    }, [course, quizId, count]);
 
     useEffect(() => {
         localStorage.setItem(`quiz_${quizId}_maxMarks`, maxMarks);
-    }, [maxMarks, quizId]);
+    }, [maxMarks, quizId, count]);
 
 
     // Function to update a question inside the list
     const updateQuestion = (updatedQuestion) => {
+        setCount((state)=> state+1);
         setQuestions((prevQuestions) => {
             const updatedList = prevQuestions.map((q) =>
                 q.id === updatedQuestion.id ? updatedQuestion : q
@@ -144,6 +146,7 @@ const Quiz = () => {
     };
 
     const addQuestion = (newQuestion) => {
+        setCount((state)=> state+1);
         setQuestions((prevQuestions) => {
             const updatedList = [...prevQuestions, newQuestion].sort(
                 (a, b) => parseInt(a.questionNum) - parseInt(b.questionNum)
@@ -266,7 +269,7 @@ const Quiz = () => {
             {!visible && <ul>
                 {questions.map((question) => (
                     <li className="questionList" key={question.id}>
-                        <Question questionData={question} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion} addQuestion={addQuestion} quizId={quizId}/>
+                        <Question questionData={question} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion} addQuestion={addQuestion} quizId={quizId} count={count}/>
                     </li>
                 ))}
                 {create &&

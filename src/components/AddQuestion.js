@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 const replaceGreekCommands = (input) => {
     console.log(input);
@@ -28,8 +28,44 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
     const [question, setQuestion] = useState(questionData.question);
     const [marks, setMarks] = useState(questionData.marks);
     const [options, setOptions] = useState(questionData.options);
-    const [image, setImage] = useState(questionData.image);  // base64 string for image
+    const [imageId, setImageId] = useState(questionData.imageId);
+    const [image, setImage] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(questionData.answer);
+    const uploadImage = async () => {
+        try {
+            let formData = new FormData();
+            formData.append("file", imageFile);
+    
+            const response = await fetch(`http://localhost:8080/question-images`, {
+                method: "POST",
+                body: formData
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to upload image: ${response.statusText}`);
+            }
+    
+            console.log("Image uploaded successfully!");
+            return await response.text();
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
+    };
+    useEffect(() => {
+        if (imageId) {
+            fetch(`http://localhost:8080/question-images/${questionData.imageId}`)
+                .then(response => response.blob())
+                .then(blob => {
+                    if (blob.size > 0) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => setImage(reader.result);
+                        reader.readAsDataURL(blob);
+                    }
+                })
+                .catch(err => console.error("Error fetching image:", err));
+        }
+    }, [createQuestion, questionData.id]);
 
     const handleOptionChange = (index, value) => {
         const updatedOptions = [...options];
@@ -40,12 +76,10 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
+            setImageFile(file); // Store the file for sending to backend
             const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64String = reader.result.split(',')[1]; // Extract base64 part (after 'data:image/png;base64,')
-                setImage(base64String);  // Save the base64 string to the state
-            };
-            reader.readAsDataURL(file); // Converts the file to base64 format
+            reader.onloadend = () => setImage(reader.result);
+            reader.readAsDataURL(file);
         }
     };
 
@@ -71,6 +105,10 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
         console.log(updatedQuestion);
         
         if(createQuestion){
+            if(imageFile){
+                let imageId1 = await uploadImage();
+                updatedQuestion.imageId = imageId1;
+            }
             const res = await fetch("http://localhost:8080/questions/" + createQuestion, {
                 method: "POST",
                 headers: {
@@ -84,10 +122,15 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
             const questionId = await res.text();
             updatedQuestion.id=questionId;
             // console.log(resBody);
+            console.log(updatedQuestion);
             addQuestion(updatedQuestion);
             setCreate(false);
         }
         else{
+            if(imageFile){
+                let imageId1 = await uploadImage();
+                updatedQuestion.imageId = imageId1;
+            }
             const res = await fetch("http://localhost:8080/questions/update/" + questionData.id, {
                 method: "PUT",
                 headers: {
@@ -98,6 +141,7 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
 
             const resBody = res.text();
             console.log(resBody); // Log the response from the backend
+            console.log(updatedQuestion);
             updateQuestion(updatedQuestion);
             setEdit(false); // Close the edit mode
         }
@@ -124,19 +168,8 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
             />
 
             <label style={styles.label}>Upload Image:</label>
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={styles.inputFile}
-            />
-            {image && (
-                <img
-                    src={`data:image/png;base64,${image}`} // Display base64 image
-                    alt="Preview"
-                    style={styles.imagePreview}
-                />
-            )}
+            <input type="file" accept="image/*" onChange={handleImageChange} style={styles.inputFile} />
+            {image && <img src={image} alt="Preview" style={styles.imagePreview} />}
 
             <label style={styles.label}>Options:</label>
             {options.map((option, index) => (
