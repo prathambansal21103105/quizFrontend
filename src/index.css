@@ -477,6 +477,7 @@ main{
   font-family: 'Roboto Condensed', sans-serif;
   cursor: pointer;
   margin:auto;
+  margin-bottom: 20px;
 }
 
 .button2:hover{
@@ -659,11 +660,10 @@ main{
   color: #f0f9f7;
   font-family: 'Roboto Condensed', sans-serif;
   cursor: pointer;
-  margin-top:20px;
 }
 
 .button4:hover{
-  background: rgb(2, 81, 2);
+  background: rgb(29, 33, 29);
 }
 
 .gif{
@@ -756,4 +756,37 @@ main{
 .duplicate1:hover{
   background-color: white;
   color:black;
+}
+
+.button5 {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: rgb(21, 23, 21);
+  color: #f0f9f7;
+  display:block;
+  font-family: 'Roboto Condensed', sans-serif;
+  cursor: pointer;
+  margin:auto;
+  margin-bottom: 20px;
+}
+
+.button5:hover{
+  color:black;
+  background: rgb(155, 153, 153);
+}
+
+.custom-file-input {
+  display: block;
+  background-color: #f8f9fa;
+  border:solid;
+  color: #080808;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin:auto;
+  margin-bottom:20px;
+}
+
+.custom-file-input:hover {
+  background-color: #e9ecef;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Question from "./Question";
 import AddQuestion from './AddQuestion';
@@ -15,6 +15,8 @@ const Quiz = () => {
     const [maxMarks, setMaxMarks] = useState(() => localStorage.getItem(`quiz_${quizId}_maxMarks`) || quiz.maxMarks);
     const [editAble, setEditAble] = useState(false);
     const [visible, setVisible] = useState(false);
+    const fileInputRef = useRef(null);
+    const [selectedFile, setSelectedFile] = useState(null);
     // console.log(quiz);
     // Load questions from localStorage or quiz data
     const [questions, setQuestions] = useState(() => {
@@ -44,6 +46,33 @@ const Quiz = () => {
             console.error("Error generating PDF:", error);
             alert("Failed to generate PDF. Please try again.");
         }
+    }
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
+    }
+
+    const registerResponses = async() => {
+        console.log(quizId);
+        if (!selectedFile) {
+            alert("Please select a PDF file first.");
+            return;
+          }
+      
+          const formData = new FormData();
+          formData.append("pdf_file", selectedFile);
+      
+          try {
+            const response = await fetch("http://127.0.0.1:5000/process_pdf/" + quizId, {
+              method: "POST",
+              body: formData,
+            });
+            const result = await response.json();
+            console.log("Server Response:", result);
+          } catch (error) {
+            console.error("Error uploading file:", error);
+          }
     }
 
     const createQuestionTrigger=()=>{
@@ -252,6 +281,14 @@ const Quiz = () => {
             <div>
             <button className="button1" onClick={createQuestionTrigger}>Add Question</button>
             <button className="button2" onClick={generatePDF}>Generate PDF</button>
+            <input
+                type="file"
+                className="custom-file-input"
+                accept="application/pdf"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+            />
+            <button className="button5" onClick={registerResponses}>Register Responses</button>
             <button className="button4" onClick={generateResults}>Generate Results</button>
             </div>
             }
