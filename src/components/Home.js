@@ -1,84 +1,79 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import QuizCard from "./QuizCard";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-const Home=()=>{
-  const [quizes,setQuizes] = useState([]);
+const Home = () => {
+  const [quizes, setQuizes] = useState([]);
   const navigate = useNavigate();
-  useEffect(()=>{
+  const { user, fetchAuthorByEmail } = useContext(AuthContext);
+
+  useEffect(() => {
     Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith("quiz_")) {
-            localStorage.removeItem(key);
-        }
+      if (key.startsWith("quiz_")) {
+        localStorage.removeItem(key);
+      }
     });
-    fetchQuizes();
-  },[]);
-  const fetchQuizes=async() => {
-    const res=await fetch("http://localhost:8080/quiz")
-    const resBody=await res.json();
-    console.log(resBody);
-    setQuizes(resBody);
-  }
-  const createQuizHandler=async() => {
-    const data={
-        "title": "Sample Quiz Title",
-        "course": "",
-        "courseCode": "",
-        "maxMarks": 0
+
+    if (user) {
+      if (user.role === "AUTHOR") {
+        fetchQuizes();
+      }
     }
-    const res=await fetch("http://localhost:8080/quiz",{
-      method:"POST",
-        headers:{
-          "Content-Type":"application/json",
+  }, [user]);
+
+  const fetchQuizes = async () => {
+    if (!user) return;
+
+    try {
+      const author = await fetchAuthorByEmail(user.email, user.token);
+      const quizList = author?.quizzes || [];
+      console.log(quizList);
+      setQuizes(quizList);
+    } catch (error) {
+      console.error("Failed to fetch quizzes:", error);
+    }
+  };
+
+  const createQuizHandler = async () => {
+    const data = {
+      title: "Sample Quiz Title",
+      course: "",
+      courseCode: "",
+      maxMarks: 0,
+    };
+
+    try {
+      const res = await fetch("http://localhost:8080/quiz/" + user.email, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${user.token}`
         },
-        body:JSON.stringify(data)
-    })
-    const resBody=await res.json();
-    console.log(resBody);
-    setQuizes((prevQuizes) => [...prevQuizes, resBody]);
-    navigate("/quiz", { state: { quiz: resBody } });
-    
-  }
-    return (
-      <>
-      {/* <Navigation user={user} reset={reset}/> */}
+        body: JSON.stringify(data)
+      });
+
+      const resBody = await res.json();
+      console.log(resBody);
+      setQuizes((prevQuizes) => [...prevQuizes, resBody]);
+      navigate("/quiz", { state: { quiz: resBody } });
+
+    } catch (error) {
+      console.error("Failed to create quiz:", error);
+    }
+  };
+
+  return (
+    <>
       <main>
-      <p className="heading"> Quizes</p>
-      {/* <div className="display">
-      <div className='outer'>
-      <h2>Dynamic Programming</h2>
-      <div className="topic">
-      <ul>
-      {items.map((element)=><li><Card key={element.id} id={element.id} question={element}/></li>)}
-      </ul>
-      </div>
-      </div>
-      </div> */}
-      {/* {topics.map((topic)=> <Tags clickHandler={clickHandler} topic={topic} user={user} flag={0}/>)} */}
-      <button className="button" onClick={createQuizHandler}>Create a quiz</button>
-      <ul className="quizList">
-      {quizes.map((quiz)=><li key={quiz.id}><QuizCard quiz={quiz}/></li>)}
-      </ul>
+        <p className="heading">Quizzes</p>
+        <button className="button" onClick={createQuizHandler}>Create a quiz</button>
+        <ul className="quizList">
+          {quizes.length > 0 && quizes.map((quiz) => <li key={quiz.id}><QuizCard quiz={quiz} /></li>)}
+        </ul>
       </main>
-      </>
-    );
-  }
-  
-  export default Home;
+    </>
+  );
+};
 
-  /*
-
-   <h1>hello</h1>
-    <button onClick={()=>{setShowLogin((prev)=>!prev)}}>{!showLogin? 'Login':'Close'}</button>
-    {showLogin && !status && <Login onSubmit={verify}/>}
-    {isTouched && status && <p>Welcome</p>}
-    {isTouched && !status && <p>Wrong Credentials</p>}
-  
-    <button onClick={()=>{setShowSignUp((prev)=>!prev)}}>{!showSignUp? 'Create an Account':'Close'}</button>
-    {showSignUp && <SignUp onSubmit={addUser}/>}
-  
-    {status && <p> Welcome to the website!!</p>}
-
-
-  */
+export default Home;

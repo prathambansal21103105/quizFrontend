@@ -790,3 +790,13 @@ main{
 .custom-file-input:hover {
   background-color: #e9ecef;
 }
+
+.logoutButton{
+  margin-top: 0px;
+}
+
+.logoutButton:hover{
+  color: darkgreen;
+  text-decoration: underline;
+  font-size: 18px;
+}

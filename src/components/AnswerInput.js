@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const AnswerInput = ({ questions, setVisible, setQuestions, quizId }) => {
   const [questionsList, setQuestionsList] = useState([...questions]);
+  const { user } = useContext(AuthContext);
 
   const handleAnswerChange = (index, value) => {
     const updatedQuestions = [...questionsList];
@@ -16,6 +19,7 @@ const AnswerInput = ({ questions, setVisible, setQuestions, quizId }) => {
         method:"POST",
           headers:{
             "Content-Type":"application/json",
+            "Authorization": `Bearer ${user.token}`
           },
           body:JSON.stringify(answers)
     })

@@ -2,8 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 100px;
-    margin-left: 80px;
+    margin-top:100px;
+    margin-left:80px;
 }
 
 .formWrapper {
@@ -14,6 +14,51 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     text-align: center;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Toggle Button Styling */
+.toggleContainer {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    margin-left: 50px;
+    height:395px;
+    width:300px;
+}
+
+.toggleText {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #333;
+}
+
+.toggleButton {
+    padding: 8px 15px;
+    border: 1px solid darkcyan;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    margin: 0 5px;
+    border-radius: 5px;
+    color:black;
+}
+
+.toggleButton:hover {
+    background: darkcyan;
+    color: white;
+}
+
+.toggleButton.active {
+    background: darkcyan;
+    color: white;
 }
 
 .form {
@@ -36,11 +81,11 @@
 .input:focus {
     border-color: darkcyan;
     background-color: rgb(179, 183, 183);
-    color: black;
+    color:black;
 }
 
-.input::placeholder {
-    color: rgb(192, 190, 190);
+.input::placeholder{
+    color:rgb(192, 190, 190);
 }
 
 .button {
@@ -63,12 +108,20 @@
     background-color: darkcyan;
 }
 
+.gif{
+    height:40%;
+    justify-content: center;
+    margin-left:70px;
+    margin-bottom: 50px;
+    margin-top:70px;
+}
+
+.flex{
+    display: flex;
+}
+
 .error {
     color: red;
     font-size: 14px;
     margin-bottom: 10px;
-}
-
-.gif{
-    width:70%;
 }

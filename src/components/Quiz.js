@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import Question from "./Question";
 import AddQuestion from './AddQuestion';
 import AnswerInput from './AnswerInput';
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const Quiz = () => {
     const location = useLocation();
@@ -18,6 +20,7 @@ const Quiz = () => {
     const [visible, setVisible] = useState(false);
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const { user } = useContext(AuthContext);
     // console.log(quiz);
     // Load questions from localStorage or quiz data
     const [questions, setQuestions] = useState(() => {
@@ -30,7 +33,12 @@ const Quiz = () => {
 
     const generatePDF = async() => {
         try {
-            const res = await fetch(`http://localhost:8080/quiz/generate-pdf/${quizId}`);
+            const res = await fetch(`http://localhost:8080/quiz/generate-pdf/${quizId}`,{
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                }
+            });
             if (!res.ok) {
                 throw new Error("Failed to generate PDF");
             }
@@ -67,6 +75,9 @@ const Quiz = () => {
           try {
             const response = await fetch("http://127.0.0.1:5000/process_pdf/" + quizId, {
               method: "POST",
+              headers: {
+                "Authorization": `Bearer ${user.token}`,
+                },
               body: formData,
             });
             const result = await response.json();
@@ -74,6 +85,7 @@ const Quiz = () => {
           } catch (error) {
             console.error("Error uploading file:", error);
           }
+          alert("Responses saved");
     }
 
     const createQuestionTrigger=()=>{
@@ -93,6 +105,7 @@ const Quiz = () => {
                     method:"POST",
                       headers:{
                         "Content-Type":"application/json",
+                        "Authorization": `Bearer ${user.token}`,
                       },
                       body:JSON.stringify(updatedQuiz)
                   })
@@ -164,9 +177,21 @@ const Quiz = () => {
 
     const generateResults = async() => {
         try{
-            const res1 = await fetch(`http://localhost:8080/quiz/evaluate/${quizId}`);
+            const res1 = await fetch(`http://localhost:8080/quiz/evaluate/${quizId}`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`
+                }
+            });
             console.log(res1);
-            const res = await fetch(`http://localhost:8080/quiz/generate-csv/${quizId}`);
+            const res = await fetch(`http://localhost:8080/quiz/generate-csv/${quizId}`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`
+                }
+            });
             if (!res.ok) {
                 throw new Error("Failed to download file");
             }

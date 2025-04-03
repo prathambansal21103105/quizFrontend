@@ -1,4 +1,6 @@
 import { useState,useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const replaceGreekCommands = (input) => {
     console.log(input);
@@ -32,6 +34,7 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
     const [image, setImage] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(questionData.answer);
+    const { user } = useContext(AuthContext);
     const uploadImage = async () => {
         try {
             let formData = new FormData();
@@ -39,6 +42,9 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
     
             const response = await fetch(`http://localhost:8080/question-images`, {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`
+                },
                 body: formData
             });
     
@@ -54,7 +60,12 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
     };
     useEffect(() => {
         if (imageId) {
-            fetch(`http://localhost:8080/question-images/${questionData.imageId}`)
+            fetch(`http://localhost:8080/question-images/${questionData.imageId}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`
+                }
+            })
                 .then(response => response.blob())
                 .then(blob => {
                     if (blob.size > 0) {
@@ -92,6 +103,7 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
         let newOptions = initialOptions.map(option => replaceGreekCommands(option));
         // let newOptions = replaceGreekCommands(initialOptions);
         console.log(newQuestion);
+        console.log(createQuestion);
         // console.log(newOptions);
         let updatedQuestion = {
             ...questionData,
@@ -113,6 +125,7 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`
                 },
                 body: JSON.stringify(updatedQuestion),
             });
@@ -135,6 +148,7 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`,
                 },
                 body: JSON.stringify(updatedQuestion),
             });

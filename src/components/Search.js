@@ -1,14 +1,23 @@
 import { useState } from "react";
 import QuizCard from "./QuizCard";
 import imageSrc from '../search.gif';
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const Search=()=>{
   const [searchInput,setSearchInput] = useState("");
   const [list,setList] = useState([]);
+  const { user } = useContext(AuthContext);
   const submitHandler=async()=>{
     setSearchInput(searchInput.trim());
     const fetchQuizesBySearchTerm=async() => {
-      const res=await fetch("http://localhost:8080/quiz/search/" + searchInput)
+      const res=await fetch("http://localhost:8080/quiz/search/" + searchInput,{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+        }
+    })
       const resBody=await res.json();
       console.log(resBody);
       setList(resBody);

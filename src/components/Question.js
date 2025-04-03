@@ -1,5 +1,7 @@
 import { useState,useEffect } from "react";
 import AddQuestion from "./AddQuestion";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQuestion, count }) => {
     const { questionNum, question, marks, options, imageId} = questionData;
@@ -7,11 +9,17 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
     const [isHovered, setIsHovered] = useState(false);
     const [edit, setEdit] = useState(false);
     const [image, setImage] = useState(null);
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         const fetchImage = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/question-images/${questionData.imageId}`);
+                const response = await fetch(`http://localhost:8080/question-images/${questionData.imageId}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${user.token}`,
+                    }
+                });
                 if (response.ok) {
                     const blob = await response.blob();
                     const reader = new FileReader();
@@ -32,6 +40,7 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
           method: "DELETE",
           headers: {
               "Content-Type": "application/json",
+              "Authorization": `Bearer ${user.token}`
           },
           body: JSON.stringify({}),
       });
@@ -48,6 +57,7 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
             },
             body: JSON.stringify(updatedQuestion),
         });
