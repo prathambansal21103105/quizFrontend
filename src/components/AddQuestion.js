@@ -181,8 +181,8 @@ const AddQuestion = ({ questionData, setEdit, updateQuestion, setCreate, createQ
                 onChange={(e) => setQuestion(e.target.value)}
             />
 
-            <label style={styles.label}>Upload Image:</label>
-            <input type="file" accept="image/*" onChange={handleImageChange} style={styles.inputFile} />
+           {!createQuestion && <label style={styles.label}>Upload Image:</label>}
+            {!createQuestion && <input type="file" accept="image/*" onChange={handleImageChange} style={styles.inputFile} />}
             {image && <img src={image} alt="Preview" style={styles.imagePreview} />}
 
             <label style={styles.label}>Options:</label>

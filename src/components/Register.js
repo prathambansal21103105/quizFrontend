@@ -71,7 +71,7 @@ const Register = () => {
                 const resBody = await res.text();
                 console.log(resBody);
             }
-            // navigate("/login");
+            navigate("/login");
         } catch (error) {
             setError("Error registering. Email or ID might be taken.");
             setFormData(initialFormData);

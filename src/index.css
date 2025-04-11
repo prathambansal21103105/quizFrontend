@@ -800,3 +800,93 @@ main{
   text-decoration: underline;
   font-size: 18px;
 }
+
+.removeImage{
+  background-color: red;
+  padding: 8px 12px;
+  color:white;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.playerCard {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  margin: 1rem auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+}
+
+.playerName {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.responseCard {
+  margin:auto;
+  margin-bottom: 20px;
+  width: 80%;
+  background-color: #f9f9ff;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.responseCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+.responseCard h3 {
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.responseCard p {
+  margin: 6px 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.responseCard strong {
+  color: #333;
+}
+
+.invisibleh2{
+  background: transparent;
+  border:transparent;
+  color:black;
+  border-bottom:solid black;
+  border-style:dashed;
+  width:100%;
+  font-size: 24px;
+  font-weight: 100;
+  text-align: center;
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  height:38px;
+  padding:0px;
+}
+
+.invisiblep{
+  background: transparent;
+  border:transparent;
+  color:black;
+  border-bottom:solid black;
+  border-style:dashed;
+  width:90px;
+  font-size: 16px;
+  font-weight: 100;
+  text-align: center;
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.branch{
+  display:inline-flex;
+}

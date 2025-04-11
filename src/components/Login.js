@@ -42,9 +42,7 @@ const Login = () => {
             console.log(token);
             console.log(flag);
             login(token,flag,email,password);
-            // if(flag === 1){
-                navigate("/");
-            // }
+            navigate("/profile");
         }
     } catch (error) {
       setError("Something went wrong. Please try again." + error.message());

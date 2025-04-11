@@ -26,9 +26,12 @@ const Navigation=()=>{
                         logout();
                         navigate("/login");
                     }} >Logout</div></li>}
-                    <li>
+                    {!user && <li>
                         <NavLink to="/signUp" className={({isActive})=> isActive ? classes.active:undefined} id="nav" end>SignUp</NavLink>
-                    </li>
+                    </li>}
+                    {user && <li>
+                        <NavLink to="/profile" className={({isActive})=> isActive ? classes.active:undefined} id="nav" end>Profile</NavLink>
+                    </li>}
                 </ul>
             </nav>
         </header>

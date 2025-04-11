@@ -47,6 +47,23 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
       console.log(res);
       deleteQuestion(questionData.id);
     }
+    const deleteImage=async()=>{
+        const res = await fetch("http://localhost:8080/questions/image/" + questionData.id, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            },
+            body: JSON.stringify({}),
+        });
+        console.log(res);
+        const updatedQuestion = {
+            ...questionData,
+            imageId:null,
+        }
+        updateQuestion(updatedQuestion);
+        setImage(null);
+    }
     const handleDuplicate = async() => {
         const updatedQuestion = {
          ...questionData,
@@ -104,7 +121,9 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
                     </ul>
 
                     <p><strong>Marks:</strong> {marks}</p>
-
+                    {image && <button className="removeImage" onClick={deleteImage}>
+                        Remove Image
+                    </button>}
                     <button className="answer1" onClick={() => setShowAnswer(!showAnswer)}>
                         {showAnswer ? "Hide Answer" : "Show Answer"}
                     </button>
