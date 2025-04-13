@@ -5,6 +5,7 @@ import AddQuestion from './AddQuestion';
 import AnswerInput from './AnswerInput';
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import QuestionsPerPageInput from "./QuestionsPerPageInput";
 
 const Quiz = () => {
     const location = useLocation();
@@ -21,6 +22,7 @@ const Quiz = () => {
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const { user } = useContext(AuthContext);
+    const [customFormat, setCustomFormat] = useState(false);
     // console.log(quiz);
     // Load questions from localStorage or quiz data
     const [questions, setQuestions] = useState(() => {
@@ -30,32 +32,6 @@ const Quiz = () => {
         }
         return quiz?.questions ? [...quiz.questions].sort((a, b) => parseInt(a.questionNum) - parseInt(b.questionNum)) : [];
     });
-
-    const generatePDF = async() => {
-        try {
-            const res = await fetch(`http://localhost:8080/quiz/generate-pdf/${quizId}`,{
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                }
-            });
-            if (!res.ok) {
-                throw new Error("Failed to generate PDF");
-            }
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `Quiz_${quizId}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error("Error generating PDF:", error);
-            alert("Failed to generate PDF. Please try again.");
-        }
-    }
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -75,9 +51,6 @@ const Quiz = () => {
           try {
             const response = await fetch("http://127.0.0.1:5000/process_pdf/" + quizId, {
               method: "POST",
-              headers: {
-                "Authorization": `Bearer ${user.token}`,
-                },
               body: formData,
             });
             const result = await response.json();
@@ -90,6 +63,10 @@ const Quiz = () => {
 
     const createQuestionTrigger=()=>{
         setCreate(true);
+    }
+
+    const customHandler = () => {
+        setCustomFormat((state)=> !state);
     }
 
     const submitHandler=async()=>{
@@ -224,7 +201,7 @@ const Quiz = () => {
     return (
         <main>
             <div className="quizContainer">
-            <p className="heading">Quiz</p>
+            <p className="heading">Quiz {quizId}</p>
             <h1 className="quizTitle">
                 {editAble? <input
                     type="name"
@@ -308,7 +285,8 @@ const Quiz = () => {
             {!visible &&
             <div>
             <button className="button1" onClick={createQuestionTrigger}>Add Question</button>
-            <button className="button2" onClick={generatePDF}>Generate PDF</button>
+            <button className="button2" onClick={customHandler}>Generate PDF</button>
+            {customFormat && <QuestionsPerPageInput quizId={quizId} cancel={customHandler}/>}
             <input
                 type="file"
                 className="custom-file-input"
