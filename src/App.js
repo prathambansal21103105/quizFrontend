@@ -7,6 +7,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import { AuthProvider } from './context/AuthContext';
 import Profile from './components/Profile';
+import ReviewGrid from './components/ReviewGrid';
 
 
 const App=()=>{
@@ -21,7 +22,9 @@ const App=()=>{
           {path:'signUp', element:<Register/>},
           {path:'searchQuiz',element:<Search/>},
           {path:'quiz',element:<Quiz/>},
-          {path:'profile',element:<Profile/>}
+          {path:'profile',element:<Profile/>},
+          {path:'player/review',element:<Quiz/>},
+          {path:'quiz/reviews',element:<ReviewGrid/>}
         ]
       }
       

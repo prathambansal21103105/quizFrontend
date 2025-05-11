@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import QuizBarChart from "./QuizBarChart";
+import CustomPieChart from "./PieChart";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const { user } = useContext(AuthContext);
@@ -10,6 +12,7 @@ const Profile = () => {
     const [branch, setBranch] = useState("");
     const [responses,setResponses] = useState([]);
     const [editAble,setEditAble] = useState(false);
+    const navigate = useNavigate();
     const submitHandler=async()=>{
         if(editAble){
             try{
@@ -75,6 +78,7 @@ const Profile = () => {
                 for(let i=0;i<data2.length;i++){
                     data2[i].percentage=(data2[i].score*100)/data2[i].maxMarks;
                 }
+                console.log(data2);
                 setName(data.name);
                 setPlayer(data);
                 setResponses(data2);
@@ -114,7 +118,27 @@ const Profile = () => {
             if(!author) fetchAuthorData();
         }
     }, [user]);
-
+    const openReadOnly = async(response,id) => {
+        console.log(response.quizId);
+        const res = await fetch(`http://localhost:8080/player/quiz/${response.quizId}`, {
+            headers: {
+                Authorization: `Bearer ${user.token}`,
+            },
+        });
+        if(res.ok){
+            const data = await res.json();
+            navigate("/player/review", { state: { quiz: data, readOnly: true, markedResponses:response.markedResponses, score:response.score} });
+        }
+        else{
+            setResponses((state) => {
+                state[id].evaluationMode =false;
+                return state;
+            })
+        }
+    }
+    const navigateQuiz = (quiz) => {
+        navigate("/quiz", { state: { quiz: quiz } });
+    }
     return (
         <main>
             <p className="heading">Profile</p>
@@ -147,6 +171,7 @@ const Profile = () => {
             {player && 
              <div className="responsesContainer">
                 <h2 className="heading">Recent Attempted Quizzes</h2>
+                
                 {responses && responses.length > 0 ? (
                     responses.map((response, index) => (
                         <div className="responseCard" key={index}>
@@ -155,6 +180,9 @@ const Profile = () => {
                             <p><strong>Total Score:</strong> {response.score}</p>
                             <p><strong>Max Marks:</strong> {response.maxMarks}</p>
                             <p><strong>Percentage:</strong> {response.percentage}%</p>
+                            {response.evaluationMode &&
+                            <button className="buttonEdit" onClick={()=>openReadOnly(response,index)}>Submit Query</button>}
+                            <CustomPieChart scores={response && response.scores? response.scores:[]}/>
                         </div>
                     ))
                 ) : (
@@ -167,7 +195,7 @@ const Profile = () => {
                 <h2 className="heading">Quizzes</h2>
                 {responses && responses.length > 0 ? (
                     responses.map((response, index) => (
-                        <div className="responseCard" key={index}>
+                        <div className="responseCard" key={index} onClick={()=>navigateQuiz(response)}>
                             <h3>{response.title}</h3> 
                             <p>{response.course}, {response.courseCode}</p>
                             <p><strong>Max Marks:</strong> {response.maxMarks}</p>

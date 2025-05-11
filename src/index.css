@@ -720,6 +720,18 @@ main{
   font-size: 16px;
 }
 
+.bulk-update-input-1 {
+  width: 80%;
+  padding: 0px;
+  border:none;
+  font-size: 16px;
+  background: transparent;
+  border-bottom: dashed;
+  color: black;
+  text-align: center;
+  cursor:text;
+}
+
 .bulk-update-button {
   padding: 10px 15px;
   margin: 10px 5px;
@@ -889,4 +901,114 @@ main{
 
 .branch{
   display:inline-flex;
+}
+
+.evaluation-button {
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: black;
+  color: #f0f9f7;
+  font-family: 'Roboto Condensed', sans-serif;
+  cursor: pointer;
+  width:max-content;
+  min-width: 70px;
+  margin-right: 0;
+  margin-left:10px;
+  transition: background-color 0.3s ease;
+  height:50px;
+  font-weight: bold;
+}
+
+.evaluation-button.green {
+  background-color: rgb(83, 71, 8); /* Green */
+}
+
+.evaluation-button.red {
+  background-color: #9c170e; /* Red */
+}
+
+.evaluation-button.white {
+  background-color: white;
+  color:black;
+  width:100px;
+}
+
+.evaluation-button.black {
+  background-color: black;
+  width:100px;
+}
+
+.evaluation-button:hover {
+  opacity: 0.9;
+}
+
+.flex {
+  display: flex;
+  /* justify-content: center; */
+  /* margin-left:95px; */
+}
+
+.first {
+  text-align:right;
+  width:53%;
+}
+
+.secondTitle{
+  text-align: left;
+  width:47%;
+}
+
+.inline {
+  display:inline flex;
+  margin-bottom:10px;
+}
+
+.widthCustom {
+  width:20px;
+  padding-top:8px;
+  display:inline;
+}
+
+.titleMode {
+  font-weight: bold;
+  display:flex;
+  color:white;
+  width:90px;
+  height:50px;
+}
+
+.box {
+  display: flex;
+  background-color: rgb(122 122 105);
+  border: solid black;
+  border-width: 3px;
+  margin-left: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  height: 80px;
+  width: max-content;
+}
+
+.buttonDiv{
+  height:50px;
+}
+
+.heading1{
+  color:blue;
+}
+
+.option1{
+  font-weight: bold;
+  text-align: left;
+  width:83%;
+}
+
+.option2{
+  font-weight: bold;
+  text-align: right;
+  width:17%;
+  color:blue;
 }

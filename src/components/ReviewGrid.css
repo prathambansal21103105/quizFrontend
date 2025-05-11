@@ -1,0 +1,125 @@
+.review-grid-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-grid-container p {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  
+  .review-grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto;
+  }
+  
+  .review-grid-table th,
+  .review-grid-table td {
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  .review-grid-table th {
+    background-color: #f7f7f7;
+    color: #444;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  
+  .review-grid-table td {
+    background-color: #fafafa;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  .review-grid-table tr:nth-child(even) td {
+    background-color: #f0f4f8;
+  }
+  
+  /* Marked responses grid */
+  .marked-responses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0;
+    margin: 0 0 8px 0;
+    list-style: none;
+  }
+  
+  .marked-response-item {
+    background-color: #f4f4f4;
+    border: 2px solid #d0d0d0;
+    border-radius: 8px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+  }
+  
+  /* Review row hover effect */
+  .review-row {
+    transition: background-color 0.3s ease;
+    position: relative;
+  }
+  
+  .review-row:hover {
+    background-color: #f9f9f9;
+  }
+  
+  /* Description cell with resolved button */
+  .description-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding-right: 1rem;
+    min-width: 250px;
+    height:100%;
+  }
+  
+  /* Resolved button hidden by default */
+  .mark-resolved-btn-player {
+    display: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: goldenrod;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Show button on row hover */
+  .review-row:hover .mark-resolved-btn-player {
+    display: inline-block;
+  }
+  
+  .mark-resolved-btn-player:hover {
+    background-color: gold;
+  }
+  
+  .resolve {
+    width:70px;
+    height:70px;
+    background-color: green;
+    border: solid black;
+  }
+
+  .resolve:hover {
+    opacity: 0.85;
+  }

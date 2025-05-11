@@ -6,23 +6,34 @@ import AnswerInput from './AnswerInput';
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import QuestionsPerPageInput from "./QuestionsPerPageInput";
+import ResponseInput from "./ResponseInput";
+import QueryInput from "./QueryInput";
+import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
     const location = useLocation();
     const [count,setCount] = useState(0);
     let quiz = location.state?.quiz;
+    let readOnly = location.state?.readOnly;
+    let markedResponses = location.state?.markedResponses;
+    let score = location.state?.score;
     const quizId = quiz?.id; // Unique identifier for the quiz
     const [create,setCreate] = useState(false);
     const [quizTitle, setQuizTitle] = useState(() => localStorage.getItem(`quiz_${quizId}_title`) || quiz.title);
     const [courseCode, setCourseCode] = useState(() => localStorage.getItem(`quiz_${quizId}_courseCode`) || quiz.courseCode);
     const [course, setCourse] = useState(() => localStorage.getItem(`quiz_${quizId}_course`) || quiz.course);
     const [maxMarks, setMaxMarks] = useState(() => localStorage.getItem(`quiz_${quizId}_maxMarks`) || quiz.maxMarks);
+    const [evaulationMode, setEvaluationMode] = useState(() => localStorage.getItem(`quiz_${quizId}_evaluationMode`) || quiz.evaluationMode);
     const [editAble, setEditAble] = useState(false);
     const [visible, setVisible] = useState(false);
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const { user } = useContext(AuthContext);
     const [customFormat, setCustomFormat] = useState(false);
+    const [responseVisible, setResponseVisible] = useState(false);
+    const readOnlyFlag = readOnly? readOnly:false;
+    const scoredMarks = score? score:0;
+    const navigate = useNavigate();
     // console.log(quiz);
     // Load questions from localStorage or quiz data
     const [questions, setQuestions] = useState(() => {
@@ -123,6 +134,10 @@ const Quiz = () => {
         localStorage.setItem(`quiz_${quizId}_maxMarks`, maxMarks);
     }, [maxMarks, quizId, count]);
 
+    useEffect(() => {
+        localStorage.setItem(`quiz_${quizId}_evaluationMode`, evaulationMode);
+    }, [evaulationMode, quizId, count]);
+
 
     // Function to update a question inside the list
     const updateQuestion = (updatedQuestion) => {
@@ -151,6 +166,24 @@ const Quiz = () => {
             prevQuestions.filter(q => q.id !== id).sort((a, b) => parseInt(a.questionNum) - parseInt(b.questionNum))
         );
     };
+
+    const toggleMode = async() => {
+        try{
+            const res = await fetch(`http://localhost:8080/quiz/toggleMode/${quizId}`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`
+                }
+            });
+            const data = res.text();
+            console.log(data);
+            setEvaluationMode(state => !state);
+        }
+        catch(error){
+            console.log("Failed to toggle evaluation mode!");
+        }
+    }
 
     const generateResults = async() => {
         try{
@@ -197,11 +230,66 @@ const Quiz = () => {
             "Error"
         ]
     };
+
+    const handleQuery = async(query)=>{
+        console.log(query);
+        const body = {
+            description:query,
+            quizId:quizId,
+            email:user.email,
+        }
+        console.log(body);
+        const res = await fetch("http://localhost:8080/reviewRequest/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            },
+            body: JSON.stringify(body),
+        });
+        if(res.ok){
+            const id = await res.json();
+            console.log(id);
+        }
+    }
+
+    const fetchReviews = async() => {
+        const res = await fetch("http://localhost:8080/quiz/reviewRequests/" + quizId, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            },
+        });
+        const data = await res.json();
+        console.log(data);
+        navigate("/quiz/reviews", { state: { reviewList: data } });
+    }
       
     return (
         <main>
             <div className="quizContainer">
-            <p className="heading">Quiz {quizId}</p>
+            {/* <div className="center"> */}
+                <div className="flex">
+                <div className="first">
+                    {<p className="heading">Quiz {quizId}</p>}
+                </div>
+                <div className="secondTitle">
+                {!readOnlyFlag && <div className="box">
+                   <div className="titleMode"> Evaluation Mode</div>
+                {!readOnlyFlag && <div className="buttonDiv">
+                    <button onClick={toggleMode} className={`evaluation-button ${evaulationMode ? "green" : "red"}`}>{evaulationMode ? "On": "Off"}</button>
+                </div>}
+                {!readOnlyFlag && <div className="buttonDiv">
+                    <button onClick={fetchReviews} className={`evaluation-button black`}>{"Review Requests"}</button>
+                </div>}
+                {!readOnlyFlag && <div className="buttonDiv">
+                    <button className={`evaluation-button white`}>{"Fetch Player Responses"}</button>
+                </div>}
+                </div>}
+                </div>
+                </div>
+            {/* </div> */}
             <h1 className="quizTitle">
                 {editAble? <input
                     type="name"
@@ -262,16 +350,24 @@ const Quiz = () => {
                     </span>
                 </div>
                 <div className="spanDiv">
-                <button className="buttonEdit" onClick={submitHandler}>{!editAble? `Edit`:`Save`}</button>
-                <button className="buttonEdit" onClick={()=>setVisible((state) => !state)}>Update Answers</button>
+                {!readOnlyFlag &&
+                <button className="buttonEdit" onClick={submitHandler}>{!editAble? `Edit`:`Save`}</button>}
+                {!readOnlyFlag &&
+                <button className="buttonEdit" onClick={()=> {setVisible((state) => !state); setResponseVisible(false); }}>Update Answers</button>}
+                {!readOnlyFlag &&
+                <button className="buttonEdit" onClick={()=> {setResponseVisible((state) => !state); setVisible(false); }}>Add Response</button>}
+
                 </div>
             </div>
+            {readOnlyFlag && <p className="heading1">Your Marked Responses, toggle for correct answer!</p>}
             <div>
             {visible && <AnswerInput questions={questions} setQuestions={setQuestions} setVisible={setVisible} quizId={quizId}/>}
-            {!visible && <ul>
-                {questions.map((question) => (
+            {responseVisible && <ResponseInput questionLength={questions.length} quizId={quizId} setResponseVisible={setResponseVisible}/>}
+            {!visible && !responseVisible && <ul>
+                {questions.map((question, index) => (
                     <li className="questionList" key={question.id}>
-                        <Question questionData={question} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion} addQuestion={addQuestion} quizId={quizId} count={count}/>
+                        {!readOnlyFlag && <Question questionData={question} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion} addQuestion={addQuestion} quizId={quizId} count={count}/>}
+                        {readOnlyFlag && <Question questionData={question} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion} addQuestion={addQuestion} quizId={quizId} count={count} readOnlyFlag={readOnlyFlag} markedAnswer={markedResponses? markedResponses[index]: 0}/>}
                     </li>
                 ))}
                 {create &&
@@ -282,22 +378,24 @@ const Quiz = () => {
                     </li>
                 }
             </ul>}
-            {!visible &&
+            {!visible && !responseVisible &&
             <div>
-            <button className="button1" onClick={createQuestionTrigger}>Add Question</button>
-            <button className="button2" onClick={customHandler}>Generate PDF</button>
+            {!readOnlyFlag && <button className="button1" onClick={createQuestionTrigger}>Add Question</button>}
+            {!readOnlyFlag && <button className="button2" onClick={customHandler}>Generate PDF</button>}
             {customFormat && <QuestionsPerPageInput quizId={quizId} cancel={customHandler}/>}
-            <input
+            {!readOnlyFlag && <input
                 type="file"
                 className="custom-file-input"
                 accept="application/pdf"
                 ref={fileInputRef}
                 onChange={handleFileChange}
-            />
-            <button className="button5" onClick={registerResponses}>Register Responses</button>
-            <button className="button4" onClick={generateResults}>Generate Results</button>
+            />}
+            {!readOnlyFlag && <button className="button5" onClick={registerResponses}>Register Responses</button>}
+            {!readOnlyFlag && <button className="button4" onClick={generateResults}>Generate Results</button>}
             </div>
             }
+            {readOnlyFlag && <p className="bold">Your Score: {scoredMarks}</p>}
+            {readOnlyFlag && <QueryInput onPost={handleQuery}/>}
             </div>
             </div>
         </main>

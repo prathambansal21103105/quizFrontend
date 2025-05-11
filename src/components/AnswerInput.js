@@ -41,7 +41,8 @@ const AnswerInput = ({ questions, setVisible, setQuestions, quizId }) => {
         <h1 className="bulk-update-title">Bulk Update Answers</h1>
         <ul className="bulk-update-list">
             {questionsList.map((question, index) => (
-            <li key={index} className="bulk-update-item">
+             <li key={index} className="bulk-update-item">
+              {index+1}{". "}
                 <input
                 className="bulk-update-input"
                 value={question.answer}

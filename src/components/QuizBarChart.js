@@ -32,7 +32,7 @@ const QuizBarChart = ({ responses }) => {
             <Label value="Score (%)" angle={-90} position="insideLeft" />
           </YAxis>
           <Tooltip formatter={(value) => `${value}%`} />
-          <Bar dataKey="percentage" fill="#4a90e2" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="percentage" fill="#325c74" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

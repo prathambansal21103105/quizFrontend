@@ -3,7 +3,7 @@ import AddQuestion from "./AddQuestion";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQuestion, count }) => {
+const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQuestion, count, readOnlyFlag, markedAnswer }) => {
     const { questionNum, question, marks, options, imageId} = questionData;
     const [showAnswer, setShowAnswer] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -97,11 +97,12 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
                         <div className="questionDes">
                         Q{questionNum}: {question}
                         </div>
+                        {!readOnlyFlag &&
                         <div style={isHovered ? styles.buttonsVisible : styles.buttonsHidden}>
                             <button className="duplicate1" onClick={handleDuplicate}>➕ Copy</button>
                             <button className="edit1" onClick={() => setEdit(true)}>✏️ Edit</button>
                             <button className="delete1" onClick={deleteHandler}>🗑️ Delete</button>
-                        </div>
+                        </div>}
                     </div>
 
                     {image && (
@@ -112,23 +113,42 @@ const Question = ({ questionData, updateQuestion, deleteQuestion, quizId, addQue
                         />
                     )}
 
-                    <ul style={styles.optionsList}>
+                    {!readOnlyFlag && <ul style={styles.optionsList}>
                         {options.map((option, index) => (
-                            <li key={index} style={styles.option}>
+                            <li key={index} style={{
+                                ...styles.option,
+                                backgroundColor: index+1 == questionData.answer ? "green" : "#f9f9f9",
+                                }}>
                                 {index + 1}. {option}
                             </li>
                         ))}
-                    </ul>
+                    </ul>}
+
+                    {readOnlyFlag && <ul style={styles.optionsList}>
+                        {options.map((option, index) => (
+                            <li key={index} 
+                            style={{
+                                ...styles.option,
+                                backgroundColor: index+1 == questionData.answer ? "green" : "#f9f9f9",
+                                border: index+1 == markedAnswer ? "3px solid orange":"transparent",
+                                // background: markedAnswer !== questionData.answer && markedAnswer == index+1 ? "red" : "green",
+                              }}
+                            >
+                                <div className="option1">{index + 1}. {option}</div> <div className="option2">{index+1 == markedAnswer ? "Your Response" : ""}</div>
+                            </li>
+                        ))}
+                    </ul>}
 
                     <p><strong>Marks:</strong> {marks}</p>
+                    {readOnlyFlag && <p><strong>Marked:</strong> {markedAnswer}</p>}
                     {image && <button className="removeImage" onClick={deleteImage}>
                         Remove Image
                     </button>}
-                    <button className="answer1" onClick={() => setShowAnswer(!showAnswer)}>
+                    {!readOnlyFlag && <button className="answer1" onClick={() => setShowAnswer(!showAnswer)}>
                         {showAnswer ? "Hide Answer" : "Show Answer"}
-                    </button>
+                    </button>}
 
-                    {showAnswer && <p><strong>Answer:</strong> {questionData.answer}</p>}
+                    {!readOnlyFlag && showAnswer && <p><strong>Answer:</strong> {questionData.answer}</p>}
                 </div>
             ) : (
                 <AddQuestion
