@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
+import React, { useState, useEffect } from "react";
+// import { AuthContext } from "../context/AuthContext";
 
-const ResponseInput = ({ questionLength, setResponseVisible, quizId }) => {
+const ResponseInput = ({ questionLength, setResponseVisible, quizId, setUpdateResponseVisible }) => {
   const [responseList, setResponseList] = useState([]);
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
   const [sid, setSid] = useState("21103000");
   const [score, setScore] = useState(0);
 
@@ -19,7 +19,6 @@ const ResponseInput = ({ questionLength, setResponseVisible, quizId }) => {
   };
 
   const addResponse = async () => {
-    // your add response logic goes here
     let data= { playerId:sid, quizId, markedResponses:responseList, score };
     console.log("Submitting responses:", data);
     const res = await fetch("http://localhost:8080/playerResponse", {
@@ -34,9 +33,25 @@ const ResponseInput = ({ questionLength, setResponseVisible, quizId }) => {
     setResponseVisible(false);
   };
 
+  const updateResponse = async () => {
+    let data= { playerId:sid, quizId, markedResponses:responseList, score };
+    console.log("Submitting responses:", data);
+    const res = await fetch("http://localhost:8080/playerResponse", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    const resBody=res.text();
+    console.log(resBody);
+    setUpdateResponseVisible(false);
+  };
+
   return (
     <div className="bulk-update-container">
-      <h1 className="bulk-update-title">Add Response for a player</h1>
+      {setResponseVisible && <h1 className="bulk-update-title">Add Response for a player</h1>}
+      {setUpdateResponseVisible && <h1 className="bulk-update-title">Update Response for a player</h1>}
       
       <div className="inline">
         {"SID :"} 
@@ -69,9 +84,12 @@ const ResponseInput = ({ questionLength, setResponseVisible, quizId }) => {
         />
       </div>
 
-      <button className="bulk-update-button update-btn" onClick={addResponse}>
+      {setResponseVisible && <button className="bulk-update-button update-btn" onClick={addResponse}>
         Register response
-      </button>
+      </button>}
+      {setUpdateResponseVisible && <button className="bulk-update-button update-btn" onClick={updateResponse}>
+        Update response
+      </button>}
       <button className="bulk-update-button cancel-btn" onClick={() => setResponseVisible(false)}>
         Cancel
       </button>

@@ -11,8 +11,8 @@ import QueryInput from "./QueryInput";
 import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
-    const location = useLocation();
     const [count,setCount] = useState(0);
+    const location = useLocation();
     let quiz = location.state?.quiz;
     let readOnly = location.state?.readOnly;
     let markedResponses = location.state?.markedResponses;
@@ -31,6 +31,7 @@ const Quiz = () => {
     const { user } = useContext(AuthContext);
     const [customFormat, setCustomFormat] = useState(false);
     const [responseVisible, setResponseVisible] = useState(false);
+    const [updateResponseVisible, setUpdateResponseVisible] = useState(false);
     const readOnlyFlag = readOnly? readOnly:false;
     const scoredMarks = score? score:0;
     const navigate = useNavigate();
@@ -265,6 +266,24 @@ const Quiz = () => {
         console.log(data);
         navigate("/quiz/reviews", { state: { reviewList: data } });
     }
+
+    const fetchData = async(quizId) => {
+        const res = await fetch("http://localhost:8080/playerResponse/"+quizId, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            },
+        });
+        const resBody = await res.json();
+        return resBody;
+    }
+
+    const fetchResponses = async() => {
+        const data = await fetchData(quizId);
+        console.log(data);
+        navigate("/quiz/responseDashboard", { state: { responseList: data, quizId:quizId} });
+    }
       
     return (
         <main>
@@ -284,7 +303,7 @@ const Quiz = () => {
                     <button onClick={fetchReviews} className={`evaluation-button black`}>{"Review Requests"}</button>
                 </div>}
                 {!readOnlyFlag && <div className="buttonDiv">
-                    <button className={`evaluation-button white`}>{"Fetch Player Responses"}</button>
+                    <button onClick={fetchResponses} className={`evaluation-button white`}>{"Fetch Player Responses"}</button>
                 </div>}
                 </div>}
                 </div>
@@ -353,9 +372,11 @@ const Quiz = () => {
                 {!readOnlyFlag &&
                 <button className="buttonEdit" onClick={submitHandler}>{!editAble? `Edit`:`Save`}</button>}
                 {!readOnlyFlag &&
-                <button className="buttonEdit" onClick={()=> {setVisible((state) => !state); setResponseVisible(false); }}>Update Answers</button>}
+                <button className="buttonEdit" onClick={()=> {setVisible((state) => !state); setResponseVisible(false); setUpdateResponseVisible(false);}}>Update Answers</button>}
                 {!readOnlyFlag &&
-                <button className="buttonEdit" onClick={()=> {setResponseVisible((state) => !state); setVisible(false); }}>Add Response</button>}
+                <button className="buttonEdit" onClick={()=> {setResponseVisible((state) => !state); setVisible(false); setUpdateResponseVisible(false); }}>Add Response</button>}
+                {!readOnlyFlag &&
+                <button className="buttonEdit" onClick={()=> {setUpdateResponseVisible((state) => !state); setVisible(false); setResponseVisible(false); }}>Update Response</button>}
 
                 </div>
             </div>
@@ -363,6 +384,8 @@ const Quiz = () => {
             <div>
             {visible && <AnswerInput questions={questions} setQuestions={setQuestions} setVisible={setVisible} quizId={quizId}/>}
             {responseVisible && <ResponseInput questionLength={questions.length} quizId={quizId} setResponseVisible={setResponseVisible}/>}
+            {updateResponseVisible && <ResponseInput questionLength={questions.length} quizId={quizId} setUpdateResponseVisible={setUpdateResponseVisible}/>}
+
             {!visible && !responseVisible && <ul>
                 {questions.map((question, index) => (
                     <li className="questionList" key={question.id}>

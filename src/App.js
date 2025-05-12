@@ -8,6 +8,7 @@ import Login from './components/Login';
 import { AuthProvider } from './context/AuthContext';
 import Profile from './components/Profile';
 import ReviewGrid from './components/ReviewGrid';
+import ResponseDashboard from './components/ResponseDashboard';
 
 
 const App=()=>{
@@ -24,7 +25,8 @@ const App=()=>{
           {path:'quiz',element:<Quiz/>},
           {path:'profile',element:<Profile/>},
           {path:'player/review',element:<Quiz/>},
-          {path:'quiz/reviews',element:<ReviewGrid/>}
+          {path:'quiz/reviews',element:<ReviewGrid/>},
+          {path:'quiz/responseDashboard', element:<ResponseDashboard/>}
         ]
       }
       

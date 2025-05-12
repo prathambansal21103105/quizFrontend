@@ -117,7 +117,7 @@ const Profile = () => {
             loadAuthorFromStorage();
             if(!author) fetchAuthorData();
         }
-    }, [user]);
+    }, [user,player,author]);
     const openReadOnly = async(response,id) => {
         console.log(response.quizId);
         const res = await fetch(`http://localhost:8080/player/quiz/${response.quizId}`, {
@@ -181,7 +181,7 @@ const Profile = () => {
                             <p><strong>Max Marks:</strong> {response.maxMarks}</p>
                             <p><strong>Percentage:</strong> {response.percentage}%</p>
                             {response.evaluationMode &&
-                            <button className="buttonEdit" onClick={()=>openReadOnly(response,index)}>Submit Query</button>}
+                            <button className="buttonEdit3" onClick={()=>openReadOnly(response,index)}>Submit Query</button>}
                             <CustomPieChart scores={response && response.scores? response.scores:[]}/>
                         </div>
                     ))
